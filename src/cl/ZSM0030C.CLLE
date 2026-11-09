@@ -1,0 +1,50 @@
+/*==================================================================*/
+/*                                                                  */
+/*  Program ID        -  ZSM0030C                                   */
+/*  Application Name  - プログラムメッセージの表示と除去          */
+/*  Author            -  T.Sannohe     (Riken Vitamin Co.,Ltd.)     */
+/*  Date Generation   -  JUN 14, 2012  (Ver 1.0)                    */
+/*                                                                  */
+/*  Remark  ｎｎｎｎｎｎｎｎｎｎｎｎｎｎｎｎｎｎｎｎｎｎｎｎｎ    */
+/*          ｎｎｎｎｎｎｎｎｎｎｎｎｎｎｎｎｎｎｎｎｎｎｎｎｎ    */
+/*                                                                  */
+/*  --------------------------------------------------------------  */
+/*  Date Generation   -  xxx 00, 200x  (Ver 1.1)                    */
+/*                    -  xxx 00, 200x  (Ver 1.2)                    */
+/*                                                                  */
+/*==================================================================*/
+
+             pgm        PARM(&iMsgID  &iMsgVAR  &oMsgDTA)
+
+
+ @Declare:             /*-------------------------------------------*/
+
+             dcl        VAR(&iMsgID)  TYPE(*Char) LEN(07)
+             dcl        VAR(&iMsgVAR) TYPE(*Char) LEN(130)
+             dcl        VAR(&oMsgDTA) TYPE(*Char) LEN(130)
+
+
+ @Procedure:           /*-------------------------------------------*/
+
+             if         COND(&iMsgID *EQ ' ') THEN(GOTO CMDLBL(@End))
+
+             rtvmsg     MSGID(&iMsgID) MSGF(FMSG) MSGDTA(&iMsgVAR) +
+                          MSG(&oMsgDTA)
+             monmsg     MSGID(CPF0000) EXEC(goto @Error)
+
+             goto       CMDLBL(@End)
+
+
+ @Error:               /*-------------------------------------------*/
+
+             chgvar     VAR(&oMsgDTA) +
+                          VALUE('該当するメッセージがありません。')
+             chgvar     VAR(&oMsgDTA) +
+                          VALUE('''' || &iMsgID || '''' || &oMsgDTA)
+
+
+ @End:                 /*-------------------------------------------*/
+
+
+             endpgm
+/*==================================================================*/
